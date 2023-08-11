@@ -63,7 +63,7 @@ def sign_up():
             db.session.commit()
             login_user(user=user, remember=True)
             flash("Account Created!", category="success")
-            return redirect(url_for(views.ticktac))
+            return redirect(url_for("views.ticktac"))
     return render_template("auth/signup.html")
 
 

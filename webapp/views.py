@@ -1,8 +1,9 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import current_user, login_required
 from . import db
-from .models import Note
+from .models import Move
 views = Blueprint('views', __name__)
+from .tic_tac import get_move
 
 @views.route("/")
 # @login_required
@@ -14,25 +15,33 @@ def index():
 @login_required
 def tictac():
     if request.method == "POST":
-        move = request.form.get("move")
-        print((move))
-        # bool_move = True
-        if move == "true":
-            move_bool = True
-            print(f"{move} seems to be True")
-        else:
-            move_bool = False
-            print(f"{move} seems to be False")
-        text = request.form.get("text")
-            
-            
-        print(f"this is it {move_bool}")
-        note = Note(
-                    text=text,
-                    move=move_bool,
-                    user_id=current_user.id,
-                )
-        db.session.add(note)
-        db.session.commit()
+        # initialize_board()
+        position = request.form.get("position")
+        match position:
+            case '1':
+                value = 1
+            case "2":
+                value = 2
+            case "3":
+                value = 3               
+            case "4":
+                value = 4
+            case "5":
+                value = 5
+            case "6":
+                value = 6                
+            case "7":
+                value = 7
+            case "8":
+                value = 8
+            case "9":
+                value = 9
 
-    return render_template("pages/tictac.html")
+
+            
+
+        move = Move(position=value)
+        db.session.add(move)
+        db.session.commit()
+    
+    return render_template("pages/tictac.html", value=value)
