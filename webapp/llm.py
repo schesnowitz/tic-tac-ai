@@ -26,14 +26,19 @@ def send_to_llm(
     gm8,
     gm9,
 ):
-    print(game_int)
     if game_int == 1:
-        game_symbol = "X"
+        current_player = "X"
+        game_int = 2
+
     else:
-        game_symbol = "O"
+        game_int == 2
+        current_player = "O"
+        game_int = 1
+
+
 
     lang_model = OpenAI(temperature=0.9)
-    # current_player = f"O"
+
     board_layout = (
         f"first row:['1', '2', '3'] second row:['4' ,'5' ,'6']third row:['7', '8', '9']"
     )
@@ -51,12 +56,20 @@ third row:['{gm7}', '{gm8}', '{gm9}']"
     
 
     
-    if is_ai_move:
-        ai_response = chain = LLMChain(llm=lang_model, prompt=prompt_llm, verbose=True)
-        save_llm_move_to_db(ai_response, game_id, current_player)
+
+    chain = LLMChain(llm=lang_model, prompt=prompt_llm, verbose=True)
+    ai_response = chain.run({'board_state': board_state, 
+                              'board_layout': board_layout, 
+                              'current_player' : current_player}
+                              ).strip()
+    
+    save_llm_move_to_db(ai_response, game_id, current_player, game_int)
+        
        
 
-def save_llm_move_to_db(ai_response, game_id, current_player):
+def save_llm_move_to_db(ai_response, game_id, current_player, game_int):
+    print(f"AI REsp {ai_response}") 
+    print(f"game id {game_id}")  
     move = db.session.query(Game).filter_by(id=game_id).first()
     if ai_response == "1":
         move.str_move_1 = current_player
@@ -78,5 +91,8 @@ def save_llm_move_to_db(ai_response, game_id, current_player):
         ai_response == "9"
         move.str_move_9 = current_player
 
-        # db.session.commit()
-        print(ai_response)
+
+    print(f"AI Response: {ai_response}")
+    print(f"Current_Player: {current_player}")
+    print(f"game int: {game_int}")
+    db.session.commit()
