@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+
+
+
+<h1>Game Over</h1>
+
+<form method="POST"> 
+    <select name="item">
+        {% for item in items %}
+          <option value="{{ item }}">{{ item }}</option>
+        {% endfor %}
+      </select> 
+    <button name="new_game" value="new_game" type="submit" class="btn btn-danger">Start Game</button>
+</form> 
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col"></th>
+      <th scope="col"></th>
+      <th scope="col"></th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row"></th>
+      <td>
+        {{game_move.str_move_1}}
+       </td>
+      <td>
+        {{game_move.str_move_2}}
+        </td>
+      <td>
+        {{game_move.str_move_3}}
+       </td>
+    </tr>
+    <tr>
+      <th scope="row"></th>
+      <td>
+        {{game_move.str_move_4}}
+      </td>
+      <td>
+        {{game_move.str_move_5}}
+
+      </td>
+      <td>
+        {{game_move.str_move_6}}
+
+      </td>
+    </tr>
+    <tr>
+      <th scope="row"></th>
+      <td>
+        {{game_move.str_move_7}}
+
+      </td>
+      <td>
+        {{game_move.str_move_8}}
+      </td>
+      <td>
+        {{game_move.str_move_9}}
+       </td>
+    </tr>
+  </tbody>
+</table>
+
+{% endblock %}

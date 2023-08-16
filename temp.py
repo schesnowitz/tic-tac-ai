@@ -1,41 +1,52 @@
-{% extends 'base.html' %}
-{% block content %}
-<h1>TicTac</h1>
+from dotenv import load_dotenv
 
-<form method="POST">
-    <div class="mb-3">
-      <label for="text" class="form-label">TicTac</label>
-      <input name="text" type="text" class="form-control" id="text" aria-describedby="emailHelp">
-      <div id="tictac" class="form-text">We'll never share your email with anyone else.</div>
-    </div>
+load_dotenv()  # take environment variables from .env.
+from langchain import PromptTemplate
+from langchain.chat_models import ChatOpenAI
+from langchain.chains import LLMChain
+llm = ChatOpenAI()
+current_player = f"X"
+board_layout = f"first row:['1', '2', '3'] second row:['4' ,'5' ,'6']third row:['7', '8', '9']"
+board_state = f"first row:['', '', ''] second row:['' ,'' , '']third row:['', '', '']"
 
-    <div class="form-check">
-        <input name="move" value="true" type="checkbox" class="form-check-input" id="exampleCheck1">
-        <label class="form-check-label" for="exampleCheck1">Check me out</label>
-      </div>
+from langchain.llms import OpenAI
+from langchain.prompts import PromptTemplate
+from langchain.chains import LLMChain
 
-    <button name="submit" type="submit" class="btn btn-primary">TicTac</button>
-  </form>
+lang_model = OpenAI(temperature=0.9)
 
-  {% for note in current_user.notes %}
-  {{ note.move }}
-  {% endfor %}
+text = "What would be a good company name for a company that makes colorful socks?"
+# print(llm("What's a good name for a guitar company that makes pink guitars"))
 
-  <div class="container" id="main">
-    <span id="turn">Tic Tac Toe</span>
 
-    <div class="box" style="border-left: 0; border-top: 0" id="box1"></div>
-    <div class="box" style="border-top: 0" id="box2"></div>
-    <div class="box" style="border-top: 0; border-right: 0" id="box3"></div>
-    <div class="box" style="border-left: 0" id="box4"></div>
-    <div class="box" id="box5"></div>
-    <div class="box" style="border-right: 0" id="box6"></div>
-    <div class="box" style="border-left: 0; border-bottom: 0" id="box7"></div>
-    <div class="box" style="border-bottom: 0" id="box8"></div>
-    <div class="box" style="border-right: 0; border-bottom: 0" id="box9"></div>
-  </div>
+prompt_llm = PromptTemplate(
+    input_variables=["input"],
+    template="answer the human in a business style of writing {input}?",
+)
 
-  <button class="btn btn-rounded" id="replay">Play Again</button>
 
-  
-{% endblock %}
+chain = LLMChain(llm=lang_model, prompt=prompt_llm, verbose=True)
+
+# print(chain.run(input="what is todays date"))
+
+
+print(chain.run("what is the largest dog breed?"))
+
+
+
+
+
+
+
+
+
+
+prompt_template = PromptTemplate.from_template(
+    "You are a master tic tac toe player. the board is laid out in this \
+    fasion: {board_layout} and the current player is: {current_player} \
+      what is your move based on the current board state of: {board_state}."
+)
+prompt_template.format(current_player=current_player, board_layout=board_layout, board_state=board_state)
+# chain = LLMChain(llm=llm, prompt=prompt_template, verbose=True)
+response = llm.predict(prompt_template)
+print(response)
