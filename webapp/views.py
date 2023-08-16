@@ -207,10 +207,10 @@ def play_game(game_id):
     else:
         game_move.current_player_int == 2
         current_player = "O"
-        game_move.current_player_int = 1
+        game_move.current_player_int = 1 
 
 
-        
+
     if request.method == "POST" and request.form.get("position"):
         print(f"From Post current player int= {game_move.current_player_int}")
         if position == "1":
