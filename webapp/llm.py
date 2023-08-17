@@ -25,15 +25,16 @@ def send_to_llm(
     gm7,
     gm8,
     gm9,
+    last_move_by_ai,
 ):
     if game_int == 1:
         current_player = "X"
-        game_int = 2
+        # game_int = 2
 
     else:
         game_int == 2
         current_player = "O"
-        game_int = 1
+        # game_int = 1
 
 
 
@@ -63,11 +64,11 @@ third row:['{gm7}', '{gm8}', '{gm9}']"
                               'current_player' : current_player}
                               ).strip()
     
-    save_llm_move_to_db(ai_response, game_id, current_player, game_int)
+    save_llm_move_to_db(ai_response, game_id, current_player, game_int, last_move_by_ai)
         
        
 
-def save_llm_move_to_db(ai_response, game_id, current_player, game_int):
+def save_llm_move_to_db(ai_response, game_id, current_player, game_int, last_move_by_ai):
     print(f"AI REsp {ai_response}") 
     print(f"game id {game_id}")  
     move = db.session.query(Game).filter_by(id=game_id).first()
@@ -92,7 +93,8 @@ def save_llm_move_to_db(ai_response, game_id, current_player, game_int):
         move.str_move_9 = current_player
 
 
-    print(f"AI Response: {ai_response}")
-    print(f"Current_Player: {current_player}")
+    # print(f"AI Response: {ai_response}")
+    # print(f"Current_Player: {current_player}")
+    move.last_move_by_ai = True
     print(f"game int: {game_int}")
     db.session.commit()

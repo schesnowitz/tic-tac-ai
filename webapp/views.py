@@ -26,16 +26,9 @@ def new_game():
     ]
     if request.method == "POST" and request.form.get("new_game"):
         who_goes_first = request.form.get("item").strip()
-        # print(who_goes_first)
-        if (
-            who_goes_first == "AI-X-First"
-            or who_goes_first == "AI-O-First"
-            or who_goes_first == "Human-X-First"
-            or who_goes_first == "Human-O-First"
-        ):
-            # print(who_goes_first)
-            flash("Let's Get Ready To Rumble!", category="success")
+        if who_goes_first == "AI-X-First" or who_goes_first == "Human-X-First":
             game = Game(
+                player="O",
                 user_id=current_user.id,
                 who_goes_first=who_goes_first,
                 str_move_1="*",
@@ -50,8 +43,32 @@ def new_game():
             )
 
             db.session.add(game)
+
             db.session.commit()
-            # print(game.str_move_1)
+            flash("Let's Get Ready To Rumble!", category="success")
+            return redirect(url_for("views.play_game", game_id=game.id))
+        elif who_goes_first == "AI-O-First" or who_goes_first == "Human-O-First":
+
+            
+            game = Game(
+                player="X",
+                user_id=current_user.id,
+                who_goes_first=who_goes_first,
+                str_move_1="*",
+                str_move_2="*",
+                str_move_3="*",
+                str_move_4="*",
+                str_move_5="*",
+                str_move_6="*",
+                str_move_7="*",
+                str_move_8="*",
+                str_move_9="*",
+            )
+
+            db.session.add(game)
+            print(f"Player= {game.player}")
+            db.session.commit()
+            flash("Let's Get Ready To Rumble!", category="success")
             return redirect(url_for("views.play_game", game_id=game.id))
         else:
             flash("Who Goes First?", category="danger")
@@ -106,72 +123,13 @@ def play_game(game_id):
     user = current_user
     position = request.form.get("position")
     game_move = db.session.query(Game).filter_by(id=game_id).first()
-    current_player = ""
-    print(f"game int on enter= {game_move.current_player_int}")
+    player = game_move.player
 
-
-
-
-    def is_ai_first_player():
-        is_ai_move = False
-        if (
-            game_move.who_goes_first == "AI-X-First"
-            and does_board_has_a_move() == False
-        ):
-            is_ai_move = True
-            print(f"AI X First ai move?: {is_ai_move}")
-
-
-
-        if (
-            game_move.who_goes_first == "AI-O-First"
-            and does_board_has_a_move() == False
-        ):
-            is_ai_move = True
-            print(f"AI O First ai move?:  {is_ai_move}")
-            game_move.current_player_int = 2 
-   
-
-        if (
-            game_move.who_goes_first == "Human-X-First"
-            and does_board_has_a_move() == False
-        ):
-            is_ai_move = False
-            print(f"Human X First ai move?: {is_ai_move}")
-  
-        if (
-            game_move.who_goes_first == "Human-O-First"
-            and does_board_has_a_move() == False
-        ):
-            is_ai_move = False
-            print(f"Human O First ai move?: {is_ai_move}")
-        return is_ai_move
-
-    print(f"is ai first func ret:  {is_ai_first_player()}")
-
-    if is_ai_first_player():
-        send_to_llm(
-                gm1=game_move.str_move_1,
-                gm2=game_move.str_move_2,
-                gm3=game_move.str_move_3,
-                gm4=game_move.str_move_4,
-                gm5=game_move.str_move_5,
-                gm6=game_move.str_move_6,
-                gm7=game_move.str_move_7,
-                gm8=game_move.str_move_8,
-                gm9=game_move.str_move_9,
-                current_player=current_player,
-                game_int=game_move.current_player_int,
-                is_ai_move=True,
-                game_id=game_id,
-            )
 
 
 
         
-    
-
-
+   
   
 
     if request.method == "POST" and request.form.get("new_game"):
@@ -184,14 +142,22 @@ def play_game(game_id):
         ]
         new_game = request.form.get("new_game")
         who_goes_first = request.form.get("item").strip()
-
-        new_game = Game(user_id=current_user.id, who_goes_first=who_goes_first, current_player_int = 1)
+        player = "SC"
+        new_game = Game(player=player, user_id=current_user.id, who_goes_first=who_goes_first)
         if (
             who_goes_first == "AI-X-First"
-            or who_goes_first == "AI-O-First"
             or who_goes_first == "Human-X-First"
+        ):
+            new_game.player = "O"
+            db.session.add(new_game)
+            db.session.commit()
+            flash("Let's Play", category="success")
+            return redirect(url_for("views.play_game", game_id=new_game.id))
+        if (
+            who_goes_first == "AI-O-First"
             or who_goes_first == "Human-O-First"
         ):
+            new_game.player = "X"
             db.session.add(new_game)
             db.session.commit()
             flash("Let's Play", category="success")
@@ -201,60 +167,51 @@ def play_game(game_id):
             return render_template(
                 "pages/game_over.html", game_move=game_move, items=items
             )
-    if game_move.current_player_int == 1:
-        current_player = "X"
-        game_move.current_player_int = 2
+        
+
+
+
+    print(f"The player is:  {game_move.player}")
+    if game_move.player == "X":
+        player = "O"
     else:
-        game_move.current_player_int == 2
-        current_player = "O"
-        game_move.current_player_int = 1 
+        game_move.player == "O"
+        player = "X"
 
 
 
     if request.method == "POST" and request.form.get("position"):
-        print(f"From Post current player int= {game_move.current_player_int}")
+
+
+
         if position == "1":
-            game_move.str_move_1 = current_player
+            game_move.str_move_1 = player
         elif position == "2":
-            game_move.str_move_2 = current_player
+            game_move.str_move_2 = player
         elif position == "3":
-            game_move.str_move_3 = current_player
+            game_move.str_move_3 = player
         elif position == "4":
-            game_move.str_move_4 = current_player
+            game_move.str_move_4 = player
         elif position == "5":
-            game_move.str_move_5 = current_player
+            game_move.str_move_5 = player
         elif position == "6":
-            game_move.str_move_6 = current_player
+            game_move.str_move_6 = player
         elif position == "7":
-            game_move.str_move_7 = current_player
+            game_move.str_move_7 = player
         elif position == "8":
-            game_move.str_move_8 = current_player
+            game_move.str_move_8 = player
         else:
             position == "9"
-            game_move.str_move_9 = current_player
+            game_move.str_move_9 = player
+
+        game_move.player = player
 
 
 
-
-
-    if is_ai_first_player() == False:
         db.session.commit()
-        # else:
-        #     send_to_llm(
-        #         gm1=game_move.str_move_1,
-        #         gm2=game_move.str_move_2,
-        #         gm3=game_move.str_move_3,
-        #         gm4=game_move.str_move_4,
-        #         gm5=game_move.str_move_5,
-        #         gm6=game_move.str_move_6,
-        #         gm7=game_move.str_move_7,
-        #         gm8=game_move.str_move_8,
-        #         gm9=game_move.str_move_9,
-        #         current_player=current_player,
-        #         game_int=game_move.current_player_int,
-        #         is_ai_move=is_ai_move,
-        #         game_id=game_id,
-        #     )
+
+
+
 
         if (
             game_move.str_move_1 == "X"

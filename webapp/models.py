@@ -42,7 +42,8 @@ class Game(db.Model):
     str_move_9 = db.Column(db.String(1), default="*")
     current_player_int = db.Column(db.Integer, default=1)
     who_goes_first = db.Column(db.String(15), default="Make A Selection")
-    start_game = db.Column(db.Boolean, default=False)
+    last_move_by_ai = db.Column(db.Boolean, default=False)
+    player = db.Column(db.String(1))
 class Move(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     game_id = db.Column(db.Integer, db.ForeignKey('game.id'))
