@@ -97,21 +97,7 @@ def play_game(game_id):
         else:
             return False
 
-    def does_board_has_a_move():
-        if (
-            game.str_move_1 != "*"
-            or game.str_move_2 != "*"
-            or game.str_move_3 != "*"
-            or game.str_move_4 != "*"
-            or game.str_move_5 != "*"
-            or game.str_move_6 != "*"
-            or game.str_move_7 != "*"
-            or game.str_move_8 != "*"
-            or game.str_move_9 != "*"
-        ):
-            return True
-        else:
-            return False
+   
 
     items = [
         "Who Goes First?",
