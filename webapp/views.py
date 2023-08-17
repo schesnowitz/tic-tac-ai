@@ -83,15 +83,15 @@ def play_game(game_id):
 
     def board_full():
         if (
-            game_move.str_move_1 != "*"
-            and game_move.str_move_2 != "*"
-            and game_move.str_move_3 != "*"
-            and game_move.str_move_4 != "*"
-            and game_move.str_move_5 != "*"
-            and game_move.str_move_6 != "*"
-            and game_move.str_move_7 != "*"
-            and game_move.str_move_8 != "*"
-            and game_move.str_move_9 != "*"
+            game.str_move_1 != "*"
+            and game.str_move_2 != "*"
+            and game.str_move_3 != "*"
+            and game.str_move_4 != "*"
+            and game.str_move_5 != "*"
+            and game.str_move_6 != "*"
+            and game.str_move_7 != "*"
+            and game.str_move_8 != "*"
+            and game.str_move_9 != "*"
         ):
             return True
         else:
@@ -99,15 +99,15 @@ def play_game(game_id):
 
     def does_board_has_a_move():
         if (
-            game_move.str_move_1 != "*"
-            or game_move.str_move_2 != "*"
-            or game_move.str_move_3 != "*"
-            or game_move.str_move_4 != "*"
-            or game_move.str_move_5 != "*"
-            or game_move.str_move_6 != "*"
-            or game_move.str_move_7 != "*"
-            or game_move.str_move_8 != "*"
-            or game_move.str_move_9 != "*"
+            game.str_move_1 != "*"
+            or game.str_move_2 != "*"
+            or game.str_move_3 != "*"
+            or game.str_move_4 != "*"
+            or game.str_move_5 != "*"
+            or game.str_move_6 != "*"
+            or game.str_move_7 != "*"
+            or game.str_move_8 != "*"
+            or game.str_move_9 != "*"
         ):
             return True
         else:
@@ -122,8 +122,8 @@ def play_game(game_id):
     ]
     user = current_user
     position = request.form.get("position")
-    game_move = db.session.query(Game).filter_by(id=game_id).first()
-    player = game_move.player
+    game = db.session.query(Game).filter_by(id=game_id).first()
+    player = game.player
 
 
 
@@ -165,46 +165,68 @@ def play_game(game_id):
         else:
             flash("Who Goes First?", category="danger")
             return render_template(
-                "pages/game_over.html", game_move=game_move, items=items
+                "pages/game_over.html", game=game, items=items
             )
         
 
 
-
-    print(f"The player is:  {game_move.player}")
-    if game_move.player == "X":
-        player = "O"
+    print(f"The player is:  {game.player}")
+    
+    if game.player == "X":
+        game.player = "O"
+        player = game.player
     else:
-        game_move.player == "O"
-        player = "X"
+        game.player == "O"
+        game.player = "X"
+        player = game.player
+  
+
+    print(f"The player is:  {game.player}")
 
 
-
+    def send_to_llm(
+                        game_id,
+                        is_ai_move,
+                        game_int,
+                        current_player,
+                        gm1,
+                        gm2,
+                        gm3,
+                        gm4,
+                        gm5,
+                        gm6,
+                        gm7,
+                        gm8,
+                        gm9,
+                        last_move_by_ai,
+                    ):
+        pass
+    
     if request.method == "POST" and request.form.get("position"):
 
 
 
         if position == "1":
-            game_move.str_move_1 = player
+            game.str_move_1 = player
         elif position == "2":
-            game_move.str_move_2 = player
+            game.str_move_2 = player
         elif position == "3":
-            game_move.str_move_3 = player
+            game.str_move_3 = player
         elif position == "4":
-            game_move.str_move_4 = player
+            game.str_move_4 = player
         elif position == "5":
-            game_move.str_move_5 = player
+            game.str_move_5 = player
         elif position == "6":
-            game_move.str_move_6 = player
+            game.str_move_6 = player
         elif position == "7":
-            game_move.str_move_7 = player
+            game.str_move_7 = player
         elif position == "8":
-            game_move.str_move_8 = player
+            game.str_move_8 = player
         else:
             position == "9"
-            game_move.str_move_9 = player
+            game.str_move_9 = player
 
-        game_move.player = player
+        game.player = player
 
 
 
@@ -214,167 +236,167 @@ def play_game(game_id):
 
 
         if (
-            game_move.str_move_1 == "X"
-            and game_move.str_move_2 == "X"
-            and game_move.str_move_3 == "X"
+            game.str_move_1 == "X"
+            and game.str_move_2 == "X"
+            and game.str_move_3 == "X"
         ):
             flash('Player "X" is the winner!', category="success")
             return render_template(
-                "pages/game_over.html", game_move=game_move, items=items
+                "pages/game_over.html", game=game, items=items
             )
         elif (
-            game_move.str_move_4 == "X"
-            and game_move.str_move_5 == "X"
-            and game_move.str_move_6 == "X"
+            game.str_move_4 == "X"
+            and game.str_move_5 == "X"
+            and game.str_move_6 == "X"
         ):
             flash('Player "X" is the winner!', category="success")
             return render_template(
-                "pages/game_over.html", game_move=game_move, items=items
+                "pages/game_over.html", game=game, items=items
             )
         elif (
-            game_move.str_move_7 == "X"
-            and game_move.str_move_8 == "X"
-            and game_move.str_move_9 == "X"
+            game.str_move_7 == "X"
+            and game.str_move_8 == "X"
+            and game.str_move_9 == "X"
         ):
             flash('Player "X" is the winner!', category="success")
             return render_template(
-                "pages/game_over.html", game_move=game_move, items=items
+                "pages/game_over.html", game=game, items=items
             )
 
         # X Vertical Wins
         elif (
-            game_move.str_move_1 == "X"
-            and game_move.str_move_4 == "X"
-            and game_move.str_move_7 == "X"
+            game.str_move_1 == "X"
+            and game.str_move_4 == "X"
+            and game.str_move_7 == "X"
         ):
             flash('Player "X" is the winner!', category="success")
             return render_template(
-                "pages/game_over.html", game_move=game_move, items=items
+                "pages/game_over.html", game=game, items=items
             )
         elif (
-            game_move.str_move_2 == "X"
-            and game_move.str_move_5 == "X"
-            and game_move.str_move_8 == "X"
+            game.str_move_2 == "X"
+            and game.str_move_5 == "X"
+            and game.str_move_8 == "X"
         ):
             flash('Player "X" is the winner!', category="success")
             return render_template(
-                "pages/game_over.html", game_move=game_move, items=items
+                "pages/game_over.html", game=game, items=items
             )
         elif (
-            game_move.str_move_3 == "X"
-            and game_move.str_move_6 == "X"
-            and game_move.str_move_9 == "X"
+            game.str_move_3 == "X"
+            and game.str_move_6 == "X"
+            and game.str_move_9 == "X"
         ):
             flash('Player "X" is the winner!', category="success")
             return render_template(
-                "pages/game_over.html", game_move=game_move, items=items
+                "pages/game_over.html", game=game, items=items
             )
 
         # X Diagional Wins
         elif (
-            game_move.str_move_1 == "X"
-            and game_move.str_move_5 == "X"
-            and game_move.str_move_9 == "X"
+            game.str_move_1 == "X"
+            and game.str_move_5 == "X"
+            and game.str_move_9 == "X"
         ):
             flash('Player "X" is the winner!', category="success")
             return render_template(
-                "pages/game_over.html", game_move=game_move, items=items
+                "pages/game_over.html", game=game, items=items
             )
         elif (
-            game_move.str_move_3 == "X"
-            and game_move.str_move_5 == "X"
-            and game_move.str_move_7 == "X"
+            game.str_move_3 == "X"
+            and game.str_move_5 == "X"
+            and game.str_move_7 == "X"
         ):
             flash('Player "X" is the winner!', category="success")
             return render_template(
-                "pages/game_over.html", game_move=game_move, items=items
+                "pages/game_over.html", game=game, items=items
             )
 
         # O Horizontal  Wins
         elif (
-            game_move.str_move_1 == "O"
-            and game_move.str_move_2 == "O"
-            and game_move.str_move_3 == "O"
+            game.str_move_1 == "O"
+            and game.str_move_2 == "O"
+            and game.str_move_3 == "O"
         ):
             flash('Player "O" is the winner!', category="success")
             return render_template(
-                "pages/game_over.html", game_move=game_move, items=items
+                "pages/game_over.html", game=game, items=items
             )
         elif (
-            game_move.str_move_4 == "O"
-            and game_move.str_move_5 == "O"
-            and game_move.str_move_6 == "O"
+            game.str_move_4 == "O"
+            and game.str_move_5 == "O"
+            and game.str_move_6 == "O"
         ):
             flash('Player "O" is the winner!', category="success")
             return render_template(
-                "pages/game_over.html", game_move=game_move, items=items
+                "pages/game_over.html", game=game, items=items
             )
         elif (
-            game_move.str_move_7 == "O"
-            and game_move.str_move_8 == "O"
-            and game_move.str_move_9 == "O"
+            game.str_move_7 == "O"
+            and game.str_move_8 == "O"
+            and game.str_move_9 == "O"
         ):
             flash('Player "O" is the winner!', category="success")
             return render_template(
-                "pages/game_over.html", game_move=game_move, items=items
+                "pages/game_over.html", game=game, items=items
             )
 
         # O Vertical Wins
         elif (
-            game_move.str_move_1 == "O"
-            and game_move.str_move_4 == "O"
-            and game_move.str_move_7 == "O"
+            game.str_move_1 == "O"
+            and game.str_move_4 == "O"
+            and game.str_move_7 == "O"
         ):
             flash('Player "O" is the winner!', category="success")
             return render_template(
-                "pages/game_over.html", game_move=game_move, items=items
+                "pages/game_over.html", game=game, items=items
             )
         elif (
-            game_move.str_move_2 == "O"
-            and game_move.str_move_5 == "O"
-            and game_move.str_move_8 == "O"
+            game.str_move_2 == "O"
+            and game.str_move_5 == "O"
+            and game.str_move_8 == "O"
         ):
             flash('Player "O" is the winner!', category="success")
             return render_template(
-                "pages/game_over.html", game_move=game_move, items=items
+                "pages/game_over.html", game=game, items=items
             )
         elif (
-            game_move.str_move_3 == "O"
-            and game_move.str_move_6 == "O"
-            and game_move.str_move_9 == "O"
+            game.str_move_3 == "O"
+            and game.str_move_6 == "O"
+            and game.str_move_9 == "O"
         ):
             flash('Player "O" is the winner!', category="success")
             return render_template(
-                "pages/game_over.html", game_move=game_move, items=items
+                "pages/game_over.html", game=game, items=items
             )
 
         # O Diagional WIns
         elif (
-            game_move.str_move_1 == "O"
-            and game_move.str_move_5 == "O"
-            and game_move.str_move_9 == "O"
+            game.str_move_1 == "O"
+            and game.str_move_5 == "O"
+            and game.str_move_9 == "O"
         ):
             flash('Player "O" is the winner!', category="success")
             return render_template(
-                "pages/game_over.html", game_move=game_move, items=items
+                "pages/game_over.html", game=game, items=items
             )
         elif (
-            game_move.str_move_3 == "O"
-            and game_move.str_move_5 == "O"
-            and game_move.str_move_7 == "O"
+            game.str_move_3 == "O"
+            and game.str_move_5 == "O"
+            and game.str_move_7 == "O"
         ):
             flash('Player "O" is the winner!', category="success")
             return render_template(
-                "pages/game_over.html", game_move=game_move, items=items
+                "pages/game_over.html", game=game, items=items
             )
         elif board_full():
             flash("Tie Game", category="info")
 
             return render_template(
-                "pages/game_over.html", game_move=game_move, items=items
+                "pages/game_over.html", game=game, items=items
             )
 
         else:
-            return render_template("pages/play_game.html", game_move=game_move)
+            return render_template("pages/play_game.html", game=game)
 
-    return render_template("pages/play_game.html", game_move=game_move)
+    return render_template("pages/play_game.html", game=game)
