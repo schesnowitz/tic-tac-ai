@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+
+
+
+<h3>{{game.who_goes_first}}</h3>
+
+
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col"></th>
+      <th scope="col"></th>
+      <th scope="col"></th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row"></th>
+      <td>
+        {{game.str_move_1}}
+        {% if game.str_move_1 != "X" %} 
+        {% if game.str_move_1 != "O" %} 
+        <form method="POST">
+          <button name="position" value="1" type="submit" class="btn btn-primary">TicTac</button>
+        </form>
+        {% endif %}
+        {% endif %}
+      </td>
+      <td>
+        {{game.str_move_2}}
+        {% if game.str_move_2 != "X" %} 
+        {% if game.str_move_2 != "O" %} 
+        <form method="POST">
+          <button name="position" value="2" type="submit" class="btn btn-primary">TicTac</button>
+        </form>
+        {% endif %}
+        {% endif %}
+      </td>
+      <td>
+        {{game.str_move_3}}
+        {% if game.str_move_3 != "X" %} 
+        {% if game.str_move_3 != "O" %} 
+        <form method="POST">
+          <button name="position" value="3" type="submit" class="btn btn-primary">TicTac</button>
+        </form>
+        {% endif %}
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <th scope="row"></th>
+      <td>
+        {{game.str_move_4}}
+        {% if game.str_move_4 != "X" %} 
+        {% if game.str_move_4 != "O" %} 
+        <form method="POST">
+          <button name="position" value="4" type="submit" class="btn btn-primary">TicTac</button>
+        </form>
+        {% endif %}
+        {% endif %}
+      </td>
+      <td>
+        {{game.str_move_5}}
+        {% if game.str_move_5 != "X" %} 
+        {% if game.str_move_5 != "O" %} 
+        <form method="POST">
+          <button name="position" value="5" type="submit" class="btn btn-primary">TicTac</button>
+        </form>
+        {% endif %}
+        {% endif %}
+      </td>
+      <td>
+        {{game.str_move_6}}
+        {% if game.str_move_6 != "X" %} 
+        {% if game.str_move_6 != "O" %} 
+        <form method="POST">
+          <button name="position" value="6" type="submit" class="btn btn-primary">TicTac</button>
+        </form>
+        {% endif %}
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <th scope="row"></th>
+      <td>
+        {{game.str_move_7}}
+        {% if game.str_move_7 != "X" %} 
+        {% if game.str_move_7 != "O" %} 
+        <form method="POST">
+          <button name="position" value="7" type="submit" class="btn btn-primary">TicTac</button>
+        </form>
+        {% endif %}
+        {% endif %}
+      </td>
+      <td>
+        {{game.str_move_8}}
+        {% if game.str_move_8 != "X" %} 
+        {% if game.str_move_8 != "O" %} 
+        <form method="POST">
+          <button name="position" value="8" type="submit" class="btn btn-primary">TicTac</button>
+        </form>
+        {% endif %}
+        {% endif %}
+      </td>
+      <td>
+        {{game.str_move_9}}
+        {% if game.str_move_9 != "X" %} 
+        {% if game.str_move_9 != "O" %} 
+        <form method="POST">
+          <button name="position" value="9" type="submit" class="btn btn-primary">TicTac</button>
+        </form>
+        {% endif %}
+        {% endif %}
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+{% endblock %}

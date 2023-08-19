@@ -44,6 +44,8 @@ class Game(db.Model):
     who_goes_first = db.Column(db.String(15), default="Make A Selection")
     last_move_by_ai = db.Column(db.Boolean, default=False)
     player = db.Column(db.String(1))
+    last_mover = db.Column(db.String(5), default="*")
+
 class Move(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     game_id = db.Column(db.Integer, db.ForeignKey('game.id'))

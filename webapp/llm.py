@@ -3,8 +3,14 @@ from dotenv import load_dotenv
 load_dotenv()  # take environment variables from .env.
 from .import db
 from .models import Game
+from langchain.memory import ConversationBufferMemory
 from langchain.llms import OpenAI
-from langchain.prompts import PromptTemplate
+from langchain.schema import SystemMessage
+from langchain.prompts import (
+    ChatPromptTemplate,
+    HumanMessagePromptTemplate,
+    MessagesPlaceholder,
+)
 from langchain.chains import LLMChain
 
 
@@ -27,74 +33,69 @@ def send_to_llm(
     gm9,
     last_move_by_ai,
 ):
-    if game_int == 1:
-        current_player = "X"
-        # game_int = 2
-
-    else:
-        game_int == 2
-        current_player = "O"
-        # game_int = 1
 
 
-
-    lang_model = OpenAI(temperature=0.9)
+    lang_model = OpenAI(temperature=0.0)
 
     board_layout = (
-        f"first row:['1', '2', '3'] second row:['4' ,'5' ,'6']third row:['7', '8', '9']"
+
+        f"['1', '2', '3']['4' ,'5' ,'6']['7', '8', '9']"
     )
     board_state = f"first row:['{gm1}', '{gm2}', '{gm3}']\
 second row:['{gm4}' ,'{gm5}', '{gm6}']\
 third row:['{gm7}', '{gm8}', '{gm9}']"
 
-    prompt_llm = PromptTemplate(
-        input_variables=["board_layout", "board_state", "current_player"],
-        template="You are a master tic tac toe player. the board is laid out in this \
-        fasion: {board_layout}  it is your move which is represented by: {current_player} \
-        what is your move based on the current board state of: {board_state}.\
-        ONLY RETURN A NUMBER 1 to 9 that represents your move",
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            SystemMessage(
+                content=f"You are a master tic tac toe player based on board configuration and the current state of the game return a number 1 - 9 that represents your move."
+            ),  # The persistent system prompt
+            MessagesPlaceholder(   
+                variable_name="chat_history"
+            ),  # Where the memory will be stored.
+            HumanMessagePromptTemplate.from_template(
+                "{human_input}"
+            ),  # Where the human input will injectd
+        ]
     )
-    
 
-    
+    memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
 
-    chain = LLMChain(llm=lang_model, prompt=prompt_llm, verbose=True)
-    ai_response = chain.run({'board_state': board_state, 
-                              'board_layout': board_layout, 
-                              'current_player' : current_player}
-                              ).strip()
-    
+    chat_llm_chain = LLMChain(
+        llm=lang_model,
+        prompt=prompt,
+        verbose=True,
+        memory=memory,
+
+    )
+
+    ai_response = chat_llm_chain.predict(human_input=f"you are player={current_player} board layout={board_layout} board state={board_state} ONLY RETURN A NUMBER 1 - 9 THAT REPRESENTS YOUR MOVE! ONLY A INTEGER. DO NOT MOVE TO A POSITION THAT HAS AN X OR O")
     save_llm_move_to_db(ai_response, game_id, current_player, game_int, last_move_by_ai)
-        
-       
 
-def save_llm_move_to_db(ai_response, game_id, current_player, game_int, last_move_by_ai):
-    print(f"AI REsp {ai_response}") 
-    print(f"game id {game_id}")  
+
+def save_llm_move_to_db(
+    ai_response, game_id, current_player, game_int, last_move_by_ai
+):
+    print(f"AI REsp {ai_response}")
+    print(f"game id {game_id}")
     move = db.session.query(Game).filter_by(id=game_id).first()
-    if ai_response == "1":
+    if "1" in ai_response:
         move.str_move_1 = current_player
-    elif ai_response == "2":
+    elif "2" in ai_response:
         move.str_move_2 = current_player
-    elif ai_response == "3":
+    elif "3" in ai_response:
         move.str_move_3 = current_player
-    elif ai_response == "4":
+    elif "4" in ai_response:
         move.str_move_4 = current_player
-    elif ai_response == "5":
+    elif "5" in ai_response:
         move.str_move_5 = current_player
-    elif ai_response == "6":
+    elif "6" in ai_response:
         move.str_move_6 = current_player
-    elif ai_response == "7":
+    elif "7" in ai_response:
         move.str_move_7 = current_player
-    elif ai_response == "8":
+    elif "8" in ai_response:
         move.str_move_8 = current_player
-    else:
-        ai_response == "9"
+    elif "9" in ai_response:
         move.str_move_9 = current_player
-
-
-    # print(f"AI Response: {ai_response}")
-    # print(f"Current_Player: {current_player}")
-    move.last_move_by_ai = True
-    print(f"game int: {game_int}")
+    move.last_mover = "ai" 
     db.session.commit()

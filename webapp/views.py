@@ -26,9 +26,10 @@ def new_game():
     ]
     if request.method == "POST" and request.form.get("new_game"):
         who_goes_first = request.form.get("item").strip()
-        if who_goes_first == "AI-X-First" or who_goes_first == "Human-X-First":
+        if who_goes_first == "AI-X-First":
             game = Game(
-                player="O",
+                last_mover="human",
+                player="X",
                 user_id=current_user.id,
                 who_goes_first=who_goes_first,
                 str_move_1="*",
@@ -44,14 +45,15 @@ def new_game():
 
             db.session.add(game)
 
-            db.session.commit()
+            db.session.commit() 
             flash("Let's Get Ready To Rumble!", category="success")
-            return redirect(url_for("views.play_game", game_id=game.id))
-        elif who_goes_first == "AI-O-First" or who_goes_first == "Human-O-First":
+            return redirect(url_for("ai.play_game_ai", game_id=game.id))
+        elif who_goes_first == "AI-O-First":
 
             
             game = Game(
-                player="X",
+                last_mover="human",
+                player="O",
                 user_id=current_user.id,
                 who_goes_first=who_goes_first,
                 str_move_1="*",
@@ -109,8 +111,10 @@ def play_game(game_id):
     user = current_user
     position = request.form.get("position")
     game = db.session.query(Game).filter_by(id=game_id).first()
-    player = game.player
+    player = "O"
+    print(f"last move from views:  {game.last_mover}")
 
+    print(f"views -- 1:{game.str_move_1} 2:{game.str_move_2} 3:{game.str_move_3} 4:{game.str_move_4} 5:{game.str_move_5} 6:{game.str_move_6} 7:{game.str_move_7} 8:{game.str_move_8} 9:{game.str_move_9}")
 
 
 
@@ -155,70 +159,52 @@ def play_game(game_id):
             )
         
 
-
-    print(f"The player is:  {game.player}")
     
-    if game.player == "X":
-        game.player = "O"
-        player = game.player
-    else:
-        game.player == "O"
-        game.player = "X"
-        player = game.player
-  
+    # if game.player == "X":
+    #     game.player = "O"
 
-    print(f"The player is:  {game.player}")
+    # else:
+    #     game.player == "O"
+    #     game.player = "X"
 
-
-    def send_to_llm(
-                        game_id,
-                        is_ai_move,
-                        game_int,
-                        current_player,
-                        gm1,
-                        gm2,
-                        gm3,
-                        gm4,
-                        gm5,
-                        gm6,
-                        gm7,
-                        gm8,
-                        gm9,
-                        last_move_by_ai,
-                    ):
-        pass
-    
     if request.method == "POST" and request.form.get("position"):
-
-
+        # loop = True
+        # while loop < 10:
 
         if position == "1":
             game.str_move_1 = player
+            game.last_mover = "human" 
         elif position == "2":
             game.str_move_2 = player
+            game.last_mover = "human" 
         elif position == "3":
             game.str_move_3 = player
+            game.last_mover = "human" 
         elif position == "4":
             game.str_move_4 = player
+            game.last_mover = "human" 
         elif position == "5":
             game.str_move_5 = player
+            game.last_mover = "human" 
         elif position == "6":
             game.str_move_6 = player
+            game.last_mover = "human" 
         elif position == "7":
             game.str_move_7 = player
+            game.last_mover = "human" 
         elif position == "8":
             game.str_move_8 = player
+            game.last_mover = "human" 
         else:
             position == "9"
             game.str_move_9 = player
-
-        game.player = player
-
-
-
+            game.last_mover = "human" 
+        game.last_mover = "human"  
         db.session.commit()
 
 
+
+      
 
 
         if (
@@ -382,7 +368,9 @@ def play_game(game_id):
                 "pages/game_over.html", game=game, items=items
             )
 
-        else:
-            return render_template("pages/play_game.html", game=game)
+        else: 
+            return redirect(url_for("ai.play_game_ai", game_id=game.id))
 
-    return render_template("pages/play_game.html", game=game)
+    return render_template("pages/play_game.html", game=game, game_id=game.id)
+
+ 
